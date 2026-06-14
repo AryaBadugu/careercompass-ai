@@ -990,8 +990,6 @@ Example: I'm a 3rd year CS student. I know Python, React, and basic ML. I've bui
 
       <footer className="footer">
         Built for Microsoft Agents League Hackathon 2026 | Azure AI Foundry • GPT-4.1-mini • Azure AI Search
-        <br />
-        SIES Graduate School of Technology, Navi Mumbai, India
       </footer>
     </div>
   );

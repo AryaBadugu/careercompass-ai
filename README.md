@@ -256,6 +256,5 @@ This project is licensed under the MIT License. See [LICENSE](LICENSE) for detai
 ## 👤 Author
 
 **Arya Badugu**
-- SIES Graduate School of Technology, Navi Mumbai, India
 - **GitHub**: [@aryabadugu](https://github.com/aryabadugu)
 - **LinkedIn**: [Arya Badugu](https://linkedin.com/in/aryabadugu)
