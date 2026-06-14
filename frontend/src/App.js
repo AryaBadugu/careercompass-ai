@@ -13,11 +13,13 @@ const STEP_NAMES = {
   6: "✅ Final Action Plan"
 };
 
+const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
+
 const ERROR_MESSAGES = {
   empty: '📝 Please describe your profile in more detail (at least 20 characters)',
   network: '🌐 Connection error. Check your internet and try again.',
   timeout: '⏱️ Request timed out. Agent is thinking too long. Try a shorter profile.',
-  server: '⚙️ Server error. Make sure your FastAPI backend is running on localhost:8000',
+  server: `⚙️ Server error. Make sure your FastAPI backend is running on ${API_BASE_URL}`,
   unknown: '❌ Something went wrong. Please try again.'
 };
 
@@ -74,7 +76,7 @@ function App() {
     }, 4000);
 
     try {
-      const response = await axios.post('http://localhost:8000/analyze', {
+      const response = await axios.post(`${API_BASE_URL}/analyze`, {
         profile: profile
       }, {
         timeout: 120000 // 2 minute timeout for agent reasoning
@@ -116,7 +118,7 @@ function App() {
   const handleCompare = async () => {
     setComparing(true);
     try {
-      const response = await axios.post('http://localhost:8000/compare', {
+      const response = await axios.post(`${API_BASE_URL}/compare`, {
         career1,
         career2
       });
@@ -133,7 +135,7 @@ function App() {
     setError('');
 
     try {
-      const response = await axios.post('http://localhost:8000/regenerate', {
+      const response = await axios.post(`${API_BASE_URL}/regenerate`, {
         original_profile: profile,
         feedback: feedback
       });
@@ -161,7 +163,7 @@ function App() {
 
     try {
       const response = await axios.post(
-        'http://localhost:8000/export-pdf',
+        `${API_BASE_URL}/export-pdf`,
         { profile },
         { responseType: 'blob' }
       );
@@ -188,7 +190,7 @@ function App() {
 
     try {
       const response = await axios.post(
-        'http://localhost:8000/export-skills-checklist',
+        `${API_BASE_URL}/export-skills-checklist`,
         { profile },
         { responseType: 'blob' }
       );
@@ -241,7 +243,7 @@ function App() {
     setError('');
 
     try {
-      const response = await axios.post('http://localhost:8000/market-demand', { skills });
+      const response = await axios.post(`${API_BASE_URL}/market-demand`, { skills });
       setMarketDemand(response.data);
     } catch (err) {
       setError('Could not fetch live market demand. Please try again.');
