@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import ReactMarkdown from 'react-markdown';
-import { Compass, Loader2, Target, Search, BarChart3, Trophy, Calendar, CheckCircle2, User, Sparkles, Navigation, Briefcase, Clock, TrendingUp, Heart, Code } from 'lucide-react';
+import { Loader2, Target, Search, BarChart3, Trophy, Calendar, CheckCircle2, User, Sparkles, Briefcase, Clock, TrendingUp, Heart, Code } from 'lucide-react';
 import './App.css';
 
 const STEP_NAMES = {
@@ -377,80 +377,6 @@ function App() {
     return phases;
   };
 
-  const parseFinalActionPlan = (text) => {
-    const cleanLines = normalizeStepOutput(text)
-      .split('\n')
-      .map((line) => line.trim())
-      .filter(Boolean);
-
-    const sections = {
-      summary: '',
-      bestPath: '',
-      whyItFits: '',
-      skillsToLearn: [],
-      timeline: [],
-      resources: [],
-      nextSteps: []
-    };
-
-    const headingMap = [
-      { key: 'bestPath', pattern: /^(best career path|best path|recommended path|top path)\s*[:\-]/i },
-      { key: 'whyItFits', pattern: /^(why it fits|why this fits|fit rationale|reason)\s*[:\-]/i },
-      { key: 'skillsToLearn', pattern: /^(skills to learn|skills|focus skills|gap skills)\s*[:\-]/i },
-      { key: 'timeline', pattern: /^(timeline|roadmap|plan|30\/60\/90|next 90 days)\s*[:\-]/i },
-      { key: 'resources', pattern: /^(resources|learning resources|reference materials)\s*[:\-]/i },
-      { key: 'nextSteps', pattern: /^(next steps|action steps|to do|this week)\s*[:\-]/i }
-    ];
-
-    let activeKey = 'summary';
-
-    const addItem = (key, value) => {
-      const item = value.replace(/^[-*]\s*/, '').replace(/^\d+[.)]\s*/, '').trim();
-      if (!item) return;
-
-      if (['skillsToLearn', 'resources', 'nextSteps', 'timeline'].includes(key)) {
-        const parts = item.split(/[,•]/).map((part) => part.trim()).filter(Boolean);
-        if (parts.length > 1) {
-          sections[key].push(...parts);
-        } else {
-          sections[key].push(item);
-        }
-      } else if (key === 'summary') {
-        sections.summary = sections.summary ? `${sections.summary} ${item}` : item;
-      } else {
-        sections[key] = sections[key] ? `${sections[key]} ${item}` : item;
-      }
-    };
-
-    cleanLines.forEach((line) => {
-      const heading = headingMap.find((entry) => entry.pattern.test(line));
-      if (heading) {
-        activeKey = heading.key;
-        const remainder = line.split(/[:\-]/).slice(1).join(':').trim();
-        if (remainder) {
-          addItem(activeKey, remainder);
-        }
-        return;
-      }
-
-      if (/^[-*]\s+|^\d+[.)]\s+/.test(line)) {
-        addItem(activeKey, line);
-        return;
-      }
-
-      if (!sections.summary) {
-        sections.summary = line;
-      } else if (activeKey === 'summary') {
-        sections.summary = `${sections.summary} ${line}`;
-      } else {
-        addItem(activeKey, line);
-      }
-    });
-
-    sections.bestPath = sections.bestPath || sections.summary.split('.')[0] || 'Recommended path pending';
-    return sections;
-  };
-
   const toUniqueItems = (items) => {
     const seen = new Set();
     return items.filter((item) => {
@@ -460,14 +386,6 @@ function App() {
       return true;
     });
   };
-
-  const renderChips = (items, chipClass) => (
-    <div className="chip-row">
-      {toUniqueItems(items).map((item) => (
-        <span key={item} className={chipClass}>{item}</span>
-      ))}
-    </div>
-  );
 
   const getStepOutput = (stepNumber) => {
     const step = steps.find((item) => item.step === stepNumber);
