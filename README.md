@@ -7,7 +7,10 @@
 [![React](https://img.shields.io/badge/React-18+-blue?style=flat&logo=react)](https://react.dev)
 [![License](https://img.shields.io/badge/License-MIT-green)](LICENSE)
 
+🚀 **[Live Demo](https://careercompass-agent.vercel.app/)** | 🎬 **[Demo Video](https://youtu.be/hW6J1EBaKXs)**
+
 ---
+
 
 ## 📋 Table of Contents
 
