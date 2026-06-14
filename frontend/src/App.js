@@ -377,16 +377,6 @@ function App() {
     return phases;
   };
 
-  const toUniqueItems = (items) => {
-    const seen = new Set();
-    return items.filter((item) => {
-      const key = item.toLowerCase();
-      if (seen.has(key)) return false;
-      seen.add(key);
-      return true;
-    });
-  };
-
   const getStepOutput = (stepNumber) => {
     const step = steps.find((item) => item.step === stepNumber);
     return step ? step.output : '';
