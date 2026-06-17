@@ -26,7 +26,9 @@ class CareerCompassAgent:
         self.client = AzureOpenAI(
             azure_endpoint=endpoint,
             api_key=os.getenv("PROJECT_KEY"),
-            api_version="2024-05-01-preview"
+            api_version="2024-05-01-preview",
+            timeout=55.0,          # Keep under Render's 60s hard limit
+            max_retries=1
         )
         print("✅ Direct Cloud Pipeline Established Successfully!")
     
@@ -49,6 +51,7 @@ class CareerCompassAgent:
                     "content": """You are CareerCompass AI, a career guidance agent. 
 When a user describes their profile, you MUST follow these 6 steps IN ORDER.
 After EACH step, print "STEP X COMPLETE:" followed by your findings.
+Be CONCISE in each step — use bullet points, not paragraphs.
 
 STEP 1 - PROFILE ANALYSIS:
 Extract the exact details from the user's input.
@@ -67,7 +70,7 @@ Print: "STEP 2 COMPLETE: Found careers=[career1, career2, ...]"
 
 STEP 3 - GAP ANALYSIS:
 Compare user's current skills to the requirements of each found career.
-Identify what skills they're missing for each path.
+Identify what skills they're missing for each path. Keep it to 2-3 bullet points per career.
 Print: "STEP 3 COMPLETE: Gaps identified for each path"
 
 STEP 4 - OPPORTUNITY RANKING:
@@ -89,24 +92,26 @@ Phase 2: 31-60 Days
 Phase 3: 61-90 Days
 - [action 1]
 - [action 2]
+Keep each phase to 3-4 bullet points max.
 
 Print: "STEP 5 COMPLETE:" followed by the roadmap.
 
 STEP 6 - FINAL PLAN:
-Synthesize everything into a highly detailed, premium, and structured action plan that looks human-crafted and professional.
-Format the output beautifully using Markdown:
+Synthesize everything into a detailed, premium action plan.
+Format using Markdown:
 - Use clear, bold headings for phases (e.g., **Phase 1: Foundation**, **Phase 2: Project Building**).
 - Provide 3 highly relevant, premium project ideas that would stand out on a resume.
 - Include a specific list of free resources, certifications, or tools from top-tier organizations (like LinkedIn Learning, Microsoft, Unstop, GitHub).
 - Make it highly actionable, specific, and directly tailored to the user's background and goals.
 - DO NOT use generic phrases like "As an AI..." or "Here is your plan." Start immediately with the structured plan.
-Print: "STEP 6 COMPLETE:" followed immediately by the beautifully formatted plan.
+Print: "STEP 6 COMPLETE:" followed immediately by the formatted plan.
 
 ALWAYS follow all 6 steps. Never skip steps. Always be encouraging."""
                 },
                 {"role": "user", "content": user_input}
             ],
-            temperature=0.7
+            temperature=0.7,
+            max_tokens=3000
         )
         
         full_response = response.choices[0].message.content
@@ -181,7 +186,8 @@ ALWAYS follow all 6 steps. Never skip steps. Always be encouraging."""
                     "content": feedback_prompt
                 }
             ],
-            temperature=0.7
+            temperature=0.7,
+            max_tokens=2000
         )
 
         regenerated_response = response.choices[0].message.content
@@ -237,7 +243,8 @@ ALWAYS follow all 6 steps. Never skip steps. Always be encouraging."""
                     "content": comparison_prompt
                 }
             ],
-            temperature=0.7
+            temperature=0.7,
+            max_tokens=1500
         )
 
         comparison_response = response.choices[0].message.content.strip()
